@@ -1,0 +1,50 @@
+---
+- name: 매운트
+  hosts: ansible4.example.com
+  vars:
+    lvms:
+      - { lvname: lv1, lvsize: 500M }
+      - { lvname: lv2, lvsize: 1G }
+    fs:
+      - { fstype: ext4, dev: /dev/vg1/lv1 }
+      - { fstype: xfs, dev: /dev/vg1/lv2 }
+    mounts:
+      - { mountdir: /lv1, device: /dev/vg1/lv1, fstype: ext4 }
+      - { mountdir: /lv2, device: /dev/vg1/lv2, fstype: xfs }
+  tasks:
+    - name: 1) 파티션 작업
+      parted:
+        device: "{{ item }}"
+        number: 1
+        flags: [ lvm ]
+        state: present
+        part_start: 1MIB
+        part_end: "100%"
+      loop:
+        - /dev/sdb
+        - /dev/sdc
+
+    - name: 2) lvm 작업
+      lvg:
+        vg: vg1
+        pvs: /dev/sdb1,/dev/sdc1
+    - name: 2-1) lv 생성
+      lvol:
+        vg: vg1
+        lv: "{{ item.lvname }}"
+        size: "{{ item.lvsize }}"
+      with_items: "{{ lvms }}"
+
+    - name: 3) 파일시스템 작업
+      filesystem:
+        fstype: "{{ item.fstype }}"
+        dev: "{{ item.dev }}"
+      with_items: "{{ fs }}"
+    
+    - name: 4) 마운트 작업
+      mount:
+        path: "{{ item.mountdir }}"
+        src: "{{ item.device }}"
+        fstype: "{{ item.fstype }}"
+        state: mounted
+      with_items: "{{ mounts }}"

@@ -1,0 +1,23 @@
+---
+- name: 복원
+  gather_facts: no
+  hosts: databases
+  vars:
+    db_packages:
+      - mariadb-server
+      - python3-PyMySQL
+    db_svc: mariadb
+    db_conf_src: http://ansible.example.com/my.cnf.standard
+    db_conf_dest: /etc/my.cnf
+  tasks:
+    - name: 서비스 내리기
+      service:
+        name: "{{ db_svc }}"
+        state: stopped
+        enabled: no 
+    - name: 패키지 삭제
+      yum:
+        name: "{{ item }}"
+        state: absent
+      with_items: "{{ db_packages }}"
+      

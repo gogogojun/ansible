@@ -1,0 +1,4 @@
+url: anisble1.example.com
+request_url1: "http://{{ url }}"
+request_url2: "https://{{ url }}"
+web_user: guest

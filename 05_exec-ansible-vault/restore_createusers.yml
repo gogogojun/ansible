@@ -1,0 +1,12 @@
+---
+- name: 유저 지우기
+  hosts: all
+  vars_files: 
+    - vars/secret.yml
+  tasks:
+    - name: 유저를 지울거야
+      user:
+        name: "{{ item.name }}"
+        state: absent
+        remove: yes
+      with_items: "{{ newusers }}"

@@ -1,0 +1,11 @@
+---
+- name: 유저 지우기
+  hosts: all
+  vars_files:
+    - secret2.yml
+  tasks:
+    - name:
+      user:
+        name: "{{ username }}"
+        state: absent
+        remove: yes

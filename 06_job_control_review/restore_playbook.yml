@@ -1,0 +1,27 @@
+---
+- name: restore playbook
+  hosts: all
+  vars_files: vars.yml
+  tasks:
+    - name: 방화벽 등록 해제
+      firewalld:
+        service: "{{ item }}"
+        immediate: yes
+        permanent: yes
+        state: disabled
+      ignore_errors: yes
+      with_items: "{{ fw_svcs }}"
+    - name: index.html 파일 삭제
+      file:
+        path: /var/www/html/index.html
+        state: absent
+    - name: 서비스 내리기
+      service:
+        name: "{{ item }}"
+        enabled: no
+        state: stopped
+      with_items: "{{ services }}"
+    - name: 패키지 삭제
+      yum:
+        name: "{{ packages }}"
+        state: absent

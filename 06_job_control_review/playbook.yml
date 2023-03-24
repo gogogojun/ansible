@@ -1,0 +1,85 @@
+---
+- name: HTTPS 서버 구축
+  hosts: webservers
+  gather_facts: yes
+  vars_files: vars.yml
+  tasks:
+    # 1) 체크 부분 - 배포판 종류, HW 사양 점검
+    # 2) 패키지 설치 - httpd, mod_ssl, firewalld
+    # 3) 서비스 기동 - httpd, firewalld
+    # 4) 웹서비스 설정
+    # 4-1) TLS Key 배포판
+    #       * /etc/pki/tls/private/localhost.Key
+    #       * /etc/pki/tls/certs/localhost.crt
+    # 4-2) /var/www/html/index.html 파일 생성
+    # 5) 방화벽에 등록 - http, https
+    # -> notify ~ handlers 사용
+    # -> 반드시 block ~ rescue 사용
+
+    # 1) 체크 부분 - 배포판 종류, HW 사양 점검
+    - name: 1) 체크 부분 - 배포판 종류, HW 사양 점검
+      fail:
+        msg: CentOS가 아니거나 또는 메모리가 부족합니다.
+      when: (ansible_distribution != "CentOS") or (ansible_memtotal_mb < min_ram_mb)
+
+    # 2) 패키지 설치 - httpd, mod_ssl, firewalld
+    - name: 2) 패키지 설치 - httpd, mod_ssl, firewalld
+      yum:
+        name: "{{ packages }}"
+        state: present
+
+    # 3) 서비스 기동 - httpd, firewalld
+    - name: 3) 서비스 기동 - httpd, firewalld
+      service:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      with_items: "{{ services }}" 
+    - name: block line
+      block:
+        # 4) 웹서비스 설정
+        # 4-1) TLS Key 배포판
+        #       * /etc/pki/tls/private/localhost.Key
+        #       * /etc/pki/tls/certs/localhost.crt
+        # 4-1-1) 디렉토리 생성 - /etc/pki/tls/{private,certs}
+        - name: 4-1-1) 디렉토리 생성 - /etc/pki/tls/{private,certs}
+          file:
+            path: "{{ item }}"
+            state: directory
+          with_items: "{{ ssl_dir }}"
+
+        # 4-1-2) TLS 키 배포
+        #     * files/localhost.key -> /etc/pki/tls/private/localhsot.Key
+        #     * files/localhost.crt -> /etc/pki/tls/certs/localhost.crt
+        - name: 4-1-2) TLS 키 배포, index.html 파일 생성
+          copy:
+            src:  "{{ item.src }}"
+            dest: "{{ item.dest }}"
+          with_items: "{{ tls_cert_files }}"
+          notify: restart web service
+      rescue:
+        - name: rescue line
+          debug:
+            msg: |
+              웹 서버 설정 중 다음 한가지에 문제가 발생하는 것 같습니다.
+              1) 인증서 디렉토리 실패
+              2) 인증서 복사 실패
+              3) index 파일 생성 실패
+              
+   # 5) 방화벽에 등록 - http, https
+    - name: 방화벽에 등록 - http, https
+      firewalld:
+        service: "{{ item }}"
+        permanent: yes
+        immediate: yes
+        state: enabled
+      with_items: "{{ fw_svcs }}"
+    # -> notify ~ handlers 사용
+    # -> 반드시 block ~ rescue 사용
+  handlers:
+    - name: restart web service
+      service:
+        name: "{{ svc_web }}"
+        state: restarted
+    
+    

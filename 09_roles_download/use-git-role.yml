@@ -1,0 +1,9 @@
+---
+- name: use davidkarban.git role playbook
+  hosts: webservers
+  gather_facts: yes
+  remote_user: devops
+  become: true
+
+  roles:
+    - davidkarban.git

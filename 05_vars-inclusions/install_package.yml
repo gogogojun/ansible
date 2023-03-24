@@ -1,0 +1,6 @@
+---
+- name: installs {{ packages.web_pkg }}
+  yum:
+    name: "{{ packages.web_pkg }}"
+    state: latest
+    

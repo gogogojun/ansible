@@ -1,0 +1,40 @@
+---
+- name: hi
+  hosts: all
+  vars_files: vars/vars.yml
+  tasks:
+    - name: 방화벽 해제
+      firewalld: 
+        service: "{{ item }}"
+        permanent: yes
+        immediate: yes
+        state: disabled
+      loop:
+        - "{{ fw_http }}"
+        - "{{ fw_https }}"
+    
+    - name: 설정파일 삭제
+      file: 
+        path: /var/www/html/index.html
+        state: absent
+    - name: 서비스 기동 중지
+      service:
+        name: "{{ item }}"
+        state: stopped
+        enabled: no 
+      loop:
+        - "{{ svc_fw }}"
+        - "{{ svc_web }}"
+    - name: 패키지 제거
+      yum:
+        name:
+          - "{{ pkg_fw }}"
+          - "{{ pkg_http }}"
+          - "{{ pkg_https }}"
+          - "{{ pkg_python }}"
+        state: absent
+        
+
+
+            
+

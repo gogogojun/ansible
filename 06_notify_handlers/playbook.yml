@@ -1,0 +1,46 @@
+---
+- name: DB설정
+  gather_facts: no
+  hosts: databases
+  vars:
+    db_packages:
+      - mariadb-server
+      - python3-PyMySQL
+    db_svc: mariadb
+    db_conf_src: http://ansible.example.com/my.cnf.standard
+    db_conf_dest: /etc/my.cnf
+  tasks:
+    # 1) DB 패키지 설치
+    # 2) DB 서비스 기동
+    # 3) DB 서비스 설정
+    # 4) 핸들러 작업
+    - name: 1) DB 패키지 설치 -mariadb-server, python3-PyMySQL
+      yum:
+        name: "{{ db_packages }}"
+        state: present
+      notify:
+        - set db password
+    - name: 2) DB 서비스 기동 -mariadb
+      service:
+        name: "{{ db_svc }}"
+        state: started
+        enabled: yes 
+    
+    - name: 3) DB 서비스 설정 - /etc/my.cnf
+      get_url:
+        url: "{{ db_conf_src }}"
+        dest: "{{ db_conf_dest }}"
+      notify:
+        - restart db service
+
+  handlers:
+    - name: restart db service
+      service:
+        name: "{{ db_svc }}"
+        state: restarted
+        enabled: true
+
+    - name: set db password
+      mysql_user:
+        name: root
+        password: soldesk1.

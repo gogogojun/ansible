@@ -1,0 +1,8 @@
+---
+- name: file module
+  hosts: all
+  tasks:
+    - name: 유저 파일 지우기
+      file:
+        path: /home/devops/users.txt
+        state: absent

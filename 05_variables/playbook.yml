@@ -1,0 +1,58 @@
+---
+- name: Deploy and start apache httpd service
+  hosts: webserver
+  vars_files: vars/vars.yml
+  tasks:
+    # 1) 패키지 설치 - httpd,mod_ssl,python3-PyMySQL, firewalld
+    # 2) 서비스 설정 - /var/www/html/index.html
+    # 3) 서비스 기동 - firewalld,httpd
+    # 4) 방화벽 등록 - http,https
+
+    # 1) 패키지 설치 - httpd,mod_ssl,python3-PyMySQL, firewalld
+    - name: 1) 패키지 설치 - {{ pkg_http }},{{pkg_https}},{{pkg_python}}, {{pkg_fw}}
+      yum:
+        name:
+          - "{{ pkg_http }}"
+          - "{{ pkg_https }}"
+          - "{{ pkg_python }}"
+          - "{{ pkg_fw }}"
+        state: present
+
+    # 2) 서비스 설정 - /var/www/html/index.html
+    - name: 2) 서비스 설정 - /var/www/html/index.html
+      copy:
+        content: '<h1>Web Server Test Page</h1>' 
+        dest: /var/www/html/index.html
+
+    # 3) 서비스 기동 - firewalld,httpd
+    - name: 3) 서비스 기동 - {{ svc_fw }},{{ svc_web }}
+      service:
+        name: "{{ item }}"
+        enabled: yes
+        state: started
+      loop:
+        - "{{ svc_fw }}"
+        - "{{ svc_web }}"
+
+    # 4) 방화벽 등록 - http,https
+    - name: 4) 방화벽 등록 - {{ fw_http }},{{ fw_https }}
+      firewalld:
+        service: "{{ item }}"
+        permanent: yes
+        immediate: yes
+        state: enabled
+      loop:
+        - "{{ fw_http }}"
+        - "{{ fw_https }}"
+- name: 5) 웹 서비스 확인
+  hosts: localhost
+  tasks:
+    - name: 웹 페이지 확인
+      uri: 
+        url: http://web1.example.com
+        return_content: yes
+        status_code: 200
+      register: output
+    - debug: var=output 
+  
+      

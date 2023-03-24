@@ -1,0 +1,48 @@
+---
+- name: 1st play
+  hosts: web1
+  tasks:
+    
+    - name: 패키치 설치
+      yum:
+        name:
+          - httpd
+          - mod_ssl
+          - firewalld
+        state: latest
+    
+    - name: 웹 서비스 설정
+      copy:
+        content: "Welcome To My Server\n"
+        dest: /var/www/html/index.html
+    
+    - name: 서비스 기동
+      service:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      loop:
+        - httpd
+        - firewalld
+    
+    - name: 방화벽 등록
+      firewalld:
+        service: "{{ item }}"
+        permanent: yes
+        immediate: yes
+        state: enabled
+      loop:
+        - http
+        - https
+
+- name: 2st play
+  hosts: localhost
+  tasks:
+    - name: 웹페이지 테스트
+      uri:
+        url: http://web1.example.com
+        return_content: yes
+        status_code: 200
+
+
+

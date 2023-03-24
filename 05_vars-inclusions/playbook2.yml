@@ -1,0 +1,10 @@
+---
+- name: fileserver 패키지 설치
+  hosts: fileservers
+  tasks:
+    - name: 태스크 포함 
+      include_tasks: install_package.yml
+      vars:
+        package:
+          web_pkg: httpd
+        

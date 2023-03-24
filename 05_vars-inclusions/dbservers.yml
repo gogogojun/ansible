@@ -1,0 +1,17 @@
+---
+- name: DB 서버 설정
+  hosts: dbservers
+  tasks:
+    - name: 변수 포함
+      include_vars: paths.yml
+
+    - name: 변수 테스트 - 디렉토리 생성({{ paths.dbpath }})
+      file:
+        path: "{{ paths.dbpath }}"
+        state: directory
+        mode: '0755'
+      register: result
+
+    - debug: var=result.path
+
+      

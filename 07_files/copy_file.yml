@@ -1,0 +1,12 @@
+---
+- name: copy module
+  hosts: all
+  tasks:
+    - name: Copy from files/users.txt to /home/devops/users.txt
+      copy:
+        src: files/users.txt
+        dest: /home/devops/users.txt
+        owner: devops
+        group: devops
+        mode: '0640'
+

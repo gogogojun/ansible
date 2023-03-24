@@ -1,0 +1,12 @@
+---
+- name: /etc/hosts
+  hosts: all
+  tasks:
+    - name: 복사 붙여넣기
+      copy:
+        src: files/hosts
+        dest: /etc/hosts
+        owner: root
+        group: root
+        mode: '0644'
+      

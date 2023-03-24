@@ -1,0 +1,21 @@
+---
+- name: MariaDB server is running
+  hosts: database_dev
+  vars:
+    mariadb_packages:
+      - mariadb-server
+      - python3-PyMySQL
+    mariadb_service: mariadb
+  tasks:
+    - name: DB 패키지 설치 - mariadb-server, python3-PyMySQL
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items: "{{ mariadb_packages }}"
+    
+    - name: DB 서비스 기동
+      service:
+        name: "{{ mariadb_service }}" 
+        state: started
+        enabled: yes
+  

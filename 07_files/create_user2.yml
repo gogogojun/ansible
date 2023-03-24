@@ -1,0 +1,24 @@
+---
+- name: 사용자 추가
+  hosts: all
+  vars_files: secret2.yml
+  tasks:
+    - name: devops 사용자 추가
+      user:
+        name: "{{ username }}"
+        password: "{{ pwhash | password_hash('sha512') }}"
+    
+    - name: /etc/sudoers.d/devops 파일 추가
+      copy:
+        src: files/devops
+        dest: /etc/sudoers.d/devops
+        owner: root 
+        group: root
+        mode: '0440'
+    - name: $HOME/.ssh/authorized_keys 내용 추가
+      authorized_key:
+        user: devops
+        state: present
+        key: "{{ item }}"
+      with_file:
+        - ~/.ssh/id_rsa.pub

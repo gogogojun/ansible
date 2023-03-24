@@ -1,0 +1,15 @@
+---
+- name: blockinfile module
+  hosts: all
+  tasks:
+    - name: Add a block of text to a file.
+      blockinfile:
+        path: /home/devops/users.txt
+        block: |
+          block line
+          3rd line
+          4th line
+          5th line
+          6th line
+          7th line
+        state: present

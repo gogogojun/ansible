@@ -1,0 +1,37 @@
+---
+- name: 방화벽, 웹서버 설정
+  hosts: all
+  #gather_facts: no
+  tasks:
+    # 1) 패키지 설치 - httpd,mod_ssl,firewalld
+    # 2) 서비스 설정 - /var/www/html/index.html
+    # 3) 서비스 기동 - httpd,firewalld
+    # 4) 방화벽 등록 - http,https
+    - name: 패키지 설치
+      yum:
+        name:
+          - httpd
+          - mod_ssl
+          - firewalld
+        state: present
+    - name: 서비스 설정
+      copy:
+        content: 'this is my server'
+        dest: /var/www/html/index.html
+    - name: 서비스 기동
+      service:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      loop:
+        - httpd
+        - firewalld
+    - name: 방화벽 등록
+      firewalld:
+        service: "{{ item }}"
+        permanent: yes
+        state: enabled
+        immediate: yes
+      loop:
+        - http
+        - https

@@ -1,0 +1,30 @@
+---
+- name: lamp 설정
+  hosts: lamp
+  vars: 
+    firewall: firewalld
+  tasks:
+    - name: 변수 포함
+      include_vars: vars/main.yml
+    - name: 태스크 포함
+      include_tasks: tasks/main.yml
+    - name: 최신 버전 firewalld 패키지 설치
+      yum:
+        name: "{{ firewall }}"
+        state: latest
+    
+    - name: 방화벽 서비스 기동
+      service:
+        name: "{{ firewall }}"
+        state: started
+        enabled: yes
+    - name: dd
+      firewalld:
+        service: http
+        started enabled
+        immediate: true
+        permanent: true
+    - name: /var/www/html/index.html 생성
+      copy:
+        content: " {{ ansible_fqdn }}({{ ansible_default_ipv4.address }}) has been customized by ansible.\n" 
+        dest: "{{ web_root }}/index.html"

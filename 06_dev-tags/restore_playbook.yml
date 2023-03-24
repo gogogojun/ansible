@@ -1,0 +1,22 @@
+---
+- name: restore playbook
+  hosts: all
+  vars:
+    svc:
+      - dovecot
+      - postfix
+  tasks:
+    - name: 서비스 내리기
+      service:
+        name: "{{ item }}"
+        state: stopped
+        enabled: no
+      with_items: "{{ svc }}"
+      ignore_errors: yes
+    
+    - name: 패키지 제거
+      yum:
+        name:
+          - dovecot
+          - postfix
+        state: absent

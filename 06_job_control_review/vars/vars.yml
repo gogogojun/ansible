@@ -1,0 +1,23 @@
+---
+min_ram_mb: 512
+svc_web: httpd
+packages:
+  - httpd
+  - mod_ssl
+  - firewalld
+services:
+  - "{{ svc_web }}"
+  - firewalld
+ssl_dir:
+  - /etc/pki/tls/private
+  - /etc/pki/tls/certs
+tls_cert_files:
+  - src: files/localhost.key
+    dest: /etc/pki/tls/private/localhost.key
+  - src: files/localhost.crt
+    dest: /etc/pki/tls/certs/localhost.crt
+  - src: files/index.html
+    dest: /var/www/html/index.html
+fw_svcs:
+  - http
+  - https

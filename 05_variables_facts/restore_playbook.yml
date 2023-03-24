@@ -1,0 +1,38 @@
+---
+- name: 복원
+  hosts: ansible1.example.com
+  vars_files:
+    - vars/vars.yml
+  tasks:
+    - name: 1) 방화벽 서비스 제거
+      firewalld:
+        service: "{{ item }}"
+        permanent: yes
+        state: disabled
+        immediate: yes
+      ignore_errors: yes
+      loop:
+        - "{{ fw_http }}"
+        - "{{ fw_https }}"
+    - name: 2) 파일 제거
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - /etc/httpd/secret
+        - /var/www/html
+    - name: 3) 서비스 disable
+      service:
+        name: "{{ item }}"
+        enabled: no
+        state: stopped
+      loop:
+        - "{{ svc_fw }}"
+        - "{{ svc_web }}"
+    - name: 4) 패키지 삭제
+      yum:
+        name:
+          - "{{ pkg_fw }}"
+          - "{{ pkg_http }}"
+          - "{{ pkg_https }}"
+        state: absent

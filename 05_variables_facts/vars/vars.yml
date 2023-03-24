@@ -1,0 +1,15 @@
+pkg_fw: firewalld
+pkg_http: httpd
+pkg_https: mod_ssl
+conf_httpd_src: files/httpd.conf
+conf_httpd_dest: /etc/httpd/conf/httpd.conf
+htaccess_src: files/.htaccess
+htaccess_dest: "{{ web_root }}/.htaccess"
+secrets_dir: /etc/httpd/secrets
+secrets_src: files/htpasswd
+secrets_dest: "{{ secrets_dir }}/htpasswd"
+web_root: /var/www/html
+svc_fw: firewalld
+svc_web: httpd
+fw_http: http
+fw_https: https

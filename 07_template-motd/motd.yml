@@ -1,0 +1,11 @@
+---
+- name: configure /etc/motd file
+  hosts: all
+  gather_facts: yes
+  vars:
+    system_owner: webmaster@example.com
+  tasks:
+    - name: deploy /etc/motd file
+      template:
+        src: template/motd.j2
+        dest: /etc/motd

@@ -1,0 +1,16 @@
+---
+- name: 파일 서버 설정
+  hosts: fileservers
+  tasks:
+    - name: 변수 포함
+      include_vars: paths.yml
+    
+    - name: 변수 테스트 - 디렉토리 생성({{paths.fileserver}})
+      file:
+        path: "{{ paths.fileserver }}"
+        state: directory
+        mode: '0755'
+      register: result
+
+
+    - debug: var=result.path

@@ -1,0 +1,8 @@
+pkg_http: httpd
+pkg_https: mod_ssl
+pkg_python: python3-PyMySQL
+pkg_fw: firewalld
+svc_fw: firewalld
+svc_web: httpd
+fw_http: http
+fw_https: https

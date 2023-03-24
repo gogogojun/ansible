@@ -1,0 +1,23 @@
+---
+# tasks file for myfirewall
+# 1) 패키지 설치 - firewalld
+# 2) 서비스 기동 - firewalld
+# 3) 방화벽 서비스 등록 - http
+
+- name: 1) 패키지 설치 - firewalld
+  yum:
+    name: firewalld
+    state: latest
+
+- name: 2) 서비스 기동 - firewalld
+  service:
+    name: firewalld
+    state: started
+    enabled: yes
+
+- name: 3) 방화벽 서비스 등록 - {{ firewall_service }}
+  firewalld:
+    service: "{{ firewall_service }}"
+    state: enabled
+    immediate: yes
+    permanent: yes

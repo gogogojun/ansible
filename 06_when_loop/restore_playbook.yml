@@ -1,0 +1,13 @@
+---
+- name: 복원
+  hosts: all
+  tasks:
+    - name: 서비스 내리기
+      service:
+        name: mariadb
+        enabled: no
+        state: stopped
+    - name: 패키지 파일삭제
+      yum:
+        name: mariadb
+        state: absent

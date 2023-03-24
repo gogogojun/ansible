@@ -1,0 +1,24 @@
+---
+- name: MAIL 작업
+  hosts: all
+  gather_facts: yes
+  tasks:
+    - name: task 작업
+      include: configure.yml
+      when: inventory_hostname in groups['mailservers']
+  
+  handlers:
+    - name: start_postfix
+      service:
+        name: postfix
+        state: started
+    
+    - name: start_dovecot
+      service:
+        name: dovecot
+        state: started
+    
+    - name: restart_postfix
+      service:
+        name: postfix
+        state: restarted

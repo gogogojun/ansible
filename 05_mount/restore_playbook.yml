@@ -1,0 +1,14 @@
+---
+- name: 언마운트
+  hosts: ansible4.example.com
+  tasks: 
+    - name: 언마운트
+      mount:
+        path: /mnt/lv2
+        src: /dev/vg1/lv2
+        state: absent
+    - name: 언마운트2
+      mount:
+        path: /mnt/lv1
+        src: /dev/vg1/lv1
+        state: absent

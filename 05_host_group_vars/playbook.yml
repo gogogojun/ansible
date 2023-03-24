@@ -1,0 +1,8 @@
+---
+- name: 패키지 설치
+  hosts: all
+  tasks:
+    - name: 아파치 패키지 설치 - {{ package }}
+      yum:
+        name: "{{ package }}"
+        state: latest

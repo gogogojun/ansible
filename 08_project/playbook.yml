@@ -1,0 +1,65 @@
+---
+- name: test web server
+  hosts: webservers
+  tasks:
+    # 1) 웹 패키지 설치 및 기동
+    # * httpd 패키지 설치
+    # * httpd 서비스 기동
+    # 2) 웹 서비스 설정 작업
+    # * /var/www/html/index.html
+    # 3) 방화벽 패키지 설치 및 기동, 서비스 등록
+    # * firewalld 패키지 설치
+    # * firewalld 서비스 기동
+    # * 방화벽 서비스 등록 - http, https
+    # 4) 클라이언트에서 웹 요청 테스트
+
+    # 1) 웹 패키지 설치 및 기동
+    # * httpd 패키지 설치
+    # * httpd 서비스 기동
+    # 2) 웹 서비스 설정 작업
+    # * /var/www/html/index.html
+    # 3) 방화벽 패키지 설치 및 기동, 서비스 등록
+    # * firewalld 패키지 설치
+    # * firewalld 서비스 기동
+    # * 방화벽 서비스 등록 - http, https
+    # 4) 클라이언트에서 웹 요청 테스트
+    
+    # * import_playbook 사용
+    # * import_tasks, include_tasks 사용
+    #=======================================
+    
+    # 1) 웹 패키지 설치 및 기동
+    # * httpd 패키지 설치
+    # * httpd 서비스 기동
+    - name: include tasks - tasks/environment.yml
+      include_tasks: tasks/environment.yml
+      vars:
+        pkg_webs:
+          - httpd
+          - mod_ssl
+        svc_web: httpd
+    # 2) 웹 서비스 설정 작업
+    # * /var/www/html/index.html
+    - name: import tasks - tasks/placeholder.yml
+      import_tasks: tasks/placeholder.yml
+      vars:
+        indexfile: /var/www/html/index.html
+        motdfile: /etc/motd
+    # 3) 방화벽 패키지 설치 및 기동, 서비스 등록
+    # * firewalld 패키지 설치
+    # * firewalld 서비스 기동
+    # * 방화벽 서비스 등록 - http, https
+    - name: include_tasks - tasks/firewall.yml
+      include_tasks: tasks/firewall.yml
+      vars:
+        pkg_fw: firewalld
+        svc_fw: firewalld
+        fw_webs:
+          - http
+          - https
+
+    # 4) 클라이언트에서 웹 요청 테스트    
+- name: import playbook - plays/test.yml
+  import_playbook: plays/test.yml
+  vars:
+    url: http://ansible1.example.com

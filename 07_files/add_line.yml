@@ -1,0 +1,9 @@
+---
+- name: lineinfile module
+  hosts: all
+  tasks:
+    - name: Add a single line of text to a file
+      lineinfile:
+        path: /home/devops/users.txt
+        line: 2nd line.
+        state: present

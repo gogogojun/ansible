@@ -1,0 +1,28 @@
+---
+- name: DB 작업
+  hosts: all
+  gather_facts: yes
+  vars:
+    db_packages:
+      - mariadb-server
+      - python3-PyMySQL
+    db_config_src_path_small: http://ansible.example.com/my.cnf.small
+    db_config_src_path_large: http://ansible.example.com/my.cnf.large
+    db_config_path: /etc/my.cnf
+    svc_db: mariadb
+  tasks:
+    - name: DB 작업 수행
+      include_tasks: prepare_db.yml
+      when: inventory_hostname in groups['databases']
+  handlers:
+    - name: start_db
+      service:
+        name: "{{ svc_db }}"
+        state: started
+
+    - name: restart_db
+      service:
+        name: "{{ svc_db }}"
+        state: restarted
+    
+        

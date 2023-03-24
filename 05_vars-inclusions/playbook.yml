@@ -1,0 +1,10 @@
+---
+- name: fileserver 패키지 설치
+  hosts: fileservers
+  tasks:
+    - name: 변수 포함
+      include_vars: package.yml
+    
+    - name: 태스크 포함 
+      include_tasks: install_package.yml
+        

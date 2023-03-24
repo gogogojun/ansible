@@ -1,0 +1,20 @@
+---
+- name: Restore playbook.yml
+  hosts: all
+  tasks:
+    # 1) /etc/ansible/facts.d 디렉토리 삭제
+    # 2) 웹 서비스 내리기 - httpd
+    # 3) 웹 패키지 삭제 - httpd
+    - name: 디렉토리 삭제
+      file:
+        path: /etc/ansible/facts.d
+        state: absent
+    - name: 웹 서비스 내리기
+      service:
+        name: httpd
+        state: stopped
+        enabled: no
+    - name: 웹 패키지 삭제
+      yum:
+        name: httpd
+        state: absent

@@ -1,0 +1,37 @@
+---
+- name: Restore the intranet.yml
+  hosts: all
+  tasks:
+    # 1) 방화벽 포트 내리기
+    # 2) 서비스 중지
+    # 3) 설정 파일 삭제
+    # 4) 설치 파일 삭제
+    - name: 1) 방화벽 포트 내리기
+      firewalld:
+        service: "{{ item }}"
+        permanent: no
+        immediate: no
+        state: disabled
+      loop:
+        - http
+        - https
+    - name: 2) 서비스 중지
+      service:
+        name: "{{ item }}"
+        state: stopped
+        enabled: no
+      loop:
+        - httpd
+        - firewalld
+    - name: 3) 설정 파일 삭제
+      file:
+        path: /var/www/html/index.html
+        state: absent
+    - name: 4) 설치 파일 삭제
+      yum:
+        name:
+          - httpd
+          - mod_ssl
+          - firewalld
+        state: absent
+      ignore_errors: yes

@@ -1,0 +1,6 @@
+---
+timesync_ntp_provider: chrony
+timesync_ntp_server:
+  - hostname: time.bora.net
+    iburst: yes
+

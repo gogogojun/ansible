@@ -1,0 +1,9 @@
+---
+- name: 파일모으기 - /var/log/secure
+  hosts: all
+  tasks:
+    - name: fetch 모듈
+      fetch:
+        src: /var/log/secure
+        dest: secure-backups/{{ inventory_hostname }}-securelog
+        flat: no
