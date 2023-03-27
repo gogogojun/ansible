@@ -1,0 +1,14 @@
+$TTL 4
+@       IN SOA  ns1.{{ domain }} root.{{ domain }}. (
+                                        10      ; serial
+                                        1D      ; refresh
+                                        1H      ; retry
+                                        1W      ; expire
+                                        3H )    ; minimum
+{{ domain }}.            IN  NS  ns1.{{ domain }}.
+ns1.{{ domain }}.        IN  A   {{ ansible_ssh_host }}
+
+www                     IN A   {{ ansible_ssh_host }}
+ftp                     IN A   {{ ansible_ssh_host }}
+                       IN MX 10   mail.{{ domain }}.
+mail                    IN A    {{ ansible_ssh_host }}                         

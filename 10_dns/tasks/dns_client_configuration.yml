@@ -1,0 +1,6 @@
+---
+- name: DNS Client 설정
+  command: "nmcli connection modify eth0 ipv4.dns {{ ansible_ssh_host }} +ipv4.dns 192.168.10.2 ipv4.dns-search {{ domain }}"
+
+- name: 변경 사항 적용
+  command: "nmcli connection up eth0"

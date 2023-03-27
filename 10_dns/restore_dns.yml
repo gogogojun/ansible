@@ -1,0 +1,35 @@
+---
+- name: dns restore
+  hosts: all
+  tasks: 
+    - name: 방화벽 해제
+      firewalld:
+        service: dns
+        immediate: yes
+        permanent: yes
+        state: disabled
+    - name: 서비스 해제
+      service:
+        name: "{{ item }}"
+        state: stopped
+        enabled: no
+      with_items:
+        - named
+        - firewalld
+    - name: 설정 파일 제거
+      file:
+        path:
+        state: absent
+      with_items:
+        - /etc/named.conf
+        - /etc/named.rfc1912.zones
+        - /var/named/named.ca
+        - /var/named/{{ domain }}.zone
+        - /var/named/{{ domain }}.rev
+    - name: 패키지 삭제
+      yum:
+        name:
+          - bind
+          - bind-utils
+          - firewalld
+        state: absent        

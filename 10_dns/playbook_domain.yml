@@ -1,0 +1,20 @@
+---
+- name: DNS 서버 설정 - {{ domain }}
+  gather_facts: no
+  hosts: example,test,soldesk
+  tasks:
+    - name: DNS 초기 설정
+      include_tasks: tasks/dns_init_configuration.yml
+
+    - name: DNS 확장 설정
+      include_tasks: tasks/dns_domain_configuration.yml    
+  
+    - name: DNS 클라이언트 설정
+      include_tasks: tasks/dns_client_configuration.yml
+  
+  handlers:
+    - name: restart named
+      service:
+        name: named
+        state: restarted
+

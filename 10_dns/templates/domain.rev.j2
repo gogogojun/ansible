@@ -1,0 +1,10 @@
+$TTL 4
+@       IN SOA  ns1.{{ domain }}. root.{{ domain }}. (
+                                        10      ; serial
+                                        1D      ; refresh
+                                        1H      ; retry
+                                        1W      ; expire
+                                        3H )    ; minimum
+
+                IN  NS          ns1.{{ domain }}.
+{{ domain_dns_reverse_num }}             IN  PTR         ns1.{{ domain }}.

@@ -1,0 +1,17 @@
+$TTL 4
+@       IN SOA  ns1.com. root.com. (
+                                        10      ; serial
+                                        1D      ; refresh
+                                        1H      ; retry
+                                        1W      ; expire
+                                        3H )    ; minimum
+com.            IN  NS  ns1.com.
+ns1.com.        IN  A   {{ ansible_ssh_host }}
+
+;; Domain Delegation
+example         IN  NS  ns1.example
+ns1.example     IN  A   192.168.10.12
+test            IN  NS  ns1.test
+ns1.test        IN  A   192.168.10.13
+soldesk         IN  NS  ns1.soldesk
+ns1.soldesk     IN  A   192.168.10.14

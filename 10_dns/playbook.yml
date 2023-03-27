@@ -1,0 +1,8 @@
+---
+- name: playbook_root.yml
+  ansible.builtin.import_playbook: playbook_root.yml
+
+- name: playbook_domain.yml
+  ansible.builtin.import_playbook: playbook_domain.yml
+    
+    

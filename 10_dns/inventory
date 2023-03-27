@@ -1,0 +1,11 @@
+[root]
+ansible1 ansible_ssh_host=192.168.10.11 
+
+[example]
+ansible2 ansible_ssh_host=192.168.10.12 
+
+[test]
+ansible3 ansible_ssh_host=192.168.10.13 
+
+[soldesk]
+ansible4 ansible_ssh_host=192.168.10.14

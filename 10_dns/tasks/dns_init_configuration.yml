@@ -1,0 +1,25 @@
+---
+- name: DNS 초기 설정 - 패키지 설치
+  yum:
+    name:
+      - bind
+      - bind-utils
+      - firewalld
+    state: present
+- name: DNS 초기 설정 - 서비스 기동
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+
+  with_items: 
+    - named
+    - firewalld
+
+- name: DNS 초기 설정 - 방화벽 등록
+  firewalld:
+    service: dns
+    permanent: yes
+    immediate: yes
+    state: enabled
+
